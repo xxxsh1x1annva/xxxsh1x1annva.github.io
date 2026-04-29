@@ -21,9 +21,9 @@ title = "Selected Publications"
 filter = "selected"
 limit = 10
 
-
 [[sections]]
-id = "awards"
+id = "services"
 type = "markdown"
-title = "Awards and Honors"
-source = "awards.md"
+title = "Services"
+source = "services.md"
+
