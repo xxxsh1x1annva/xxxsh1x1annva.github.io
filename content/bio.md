@@ -1,5 +1,5 @@
-I am a PhD student at the School of Science, University of Example, advised by [Prof. Advisor One](https://example.com) and [Dr. Advisor Two](https://example.com).
-
-Prior to this, I obtained a BSc degree with First Class Honours in Natural Science from the University of Example.
-
-My current research focuses on investigating the mathematical principles of natural philosophy.
+- Hi, welcome to the homepage of Xinxin Xing (邢馨心)!
+- My name is pronounced roughly like “Sheen-sheen.” Thanks for giving it a try :)
+- I am a second-year PhD student at Beihang University, supervised by Prof. Jianwei Liu and Associate Prof. Yizhong Liu. Prior to this, I obtained a BSc degree at Beihang University and switched to PhD during my master's study.
+- My primary research area is the performance optimization of multi-party threshold cryptographic protocols. I am also broadly interested in building robust systems.
+- I’m always happy to connect and explore fun ideas.

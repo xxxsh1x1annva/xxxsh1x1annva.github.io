@@ -1,0 +1,15 @@
+- 🏆 I’m honored to have been selected for the **CAST Young Talent Development Program** (PhD Track)
+- **Sep 2025** — Merit Student, Beihang University.
+- **Apr 2024** — Outstanding Graduate Student, Beihang University.
+- **Nov 2023** — Hisense Scholarship
+- **Sep 2023** — **China National Scholarship**
+- **Sep 2023** — First-Class Graduate Academic Scholarship, ranked 1st
+- **Sep 2023** — Merit Studen, Beihang University.
+- **Sep 2022** — First-Class Graduate Academic Scholarship.
+- **Sep 2022** — Graduate Freshman Scholarship, ranked 1st
+- **Jul 1, 2022** — **Outstanding Graduate of Beijing**
+- **Jul 1, 2022** — **Merit Student of Beijing**
+- **Sep 2021** — Advanced Individual in Social Practice, Beihang University.
+- **Nov 2020** — Merit Student, Beihang University
+- **Sep 2020** — Advanced Worker in Social Practice, Beihang University
+- **Aug 2020** — First Prize, 13th National Collegiate Cybersecurity Competition

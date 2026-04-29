@@ -45,6 +45,7 @@ export interface Publication {
   summary?: string;
   researchArea: ResearchArea;
   description?: string;
+  order?: number;
 }
 
 export type PublicationType =
@@ -77,4 +78,3 @@ export type ResearchArea =
   | 'transformer-architectures'
   | 'biomedical-engineering'
   | 'other';
-

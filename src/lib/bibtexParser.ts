@@ -1,6 +1,5 @@
 import { Publication, PublicationType, ResearchArea } from '@/types/publication';
 import { getConfig } from './config';
-import { getRuntimeI18nConfig } from './i18n/config';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const bibtexParse = require('bibtex-parse-js');
@@ -36,14 +35,17 @@ const monthMapping: Record<string, number> = {
 };
 
 export function parseBibTeX(bibtexContent: string, locale?: string): Publication[] {
-  const highlightNames = getHighlightNames(locale);
+  const config = getConfig(locale);
+  const authorName = config.author.name;
   const entries = bibtexParse.toJSON(bibtexContent);
 
   return entries.map((entry: { entryType: string; citationKey: string; entryTags: Record<string, string> }, index: number) => {
     const tags = entry.entryTags;
 
+
+
     // Parse authors
-    const authors = parseAuthors(tags.author || '', highlightNames);
+    const authors = parseAuthors(tags.author || '', authorName);
 
     // Parse year and month
     const year = parseInt(tags.year) || new Date().getFullYear();
@@ -58,6 +60,12 @@ export function parseBibTeX(bibtexContent: string, locale?: string): Publication
 
     // Parse selected field (convert string to boolean)
     const selected = tags.selected === 'true' || tags.selected === 'yes';
+
+    // Parse order field (string -> number)
+    const order =
+      tags.order !== undefined && tags.order !== ''
+        ? Number(tags.order)
+        : undefined;
 
     // Parse preview field (remove braces if present)
     const preview = tags.preview?.replace(/[{}]/g, '');
@@ -88,9 +96,10 @@ export function parseBibTeX(bibtexContent: string, locale?: string): Publication
       description: cleanBibTeXString(tags.description || tags.note),
       selected,
       preview,
+      order,
 
       // Store original BibTeX (excluding custom fields)
-      bibtex: reconstructBibTeX(entry, ['selected', 'preview', 'description', 'keywords', 'code']),
+      bibtex: reconstructBibTeX(entry, ['selected', 'preview', 'description', 'keywords', 'code', 'order']),
     };
 
     // Clean up undefined fields
@@ -102,89 +111,41 @@ export function parseBibTeX(bibtexContent: string, locale?: string): Publication
 
     return publication;
   }).sort((a: Publication, b: Publication) => {
-    // Sort by year (descending), then by month if available
-    if (b.year !== a.year) return b.year - a.year;
+    const ao = a.order;
+    const bo = b.order;
 
-    // For month comparison, treat missing months as January (1) to ensure they appear last within the year
-    const monthA = typeof a.month === 'string' ?
-      (monthMapping[a.month.toLowerCase()] || parseInt(a.month) || 1) :
-      (a.month || 1);
-    const monthB = typeof b.month === 'string' ?
-      (monthMapping[b.month.toLowerCase()] || parseInt(b.month) || 1) :
-      (b.month || 1);
+    const aHas = Number.isFinite(ao);
+    const bHas = Number.isFinite(bo);
 
-    // Sort by month descending (December to January)
-    return monthB - monthA;
+    // 1) order first (smaller order comes earlier: 1,2,3,...)
+    if (aHas && bHas) return (bo as number) - (ao as number);
+    if (aHas && !bHas) return -1;
+    if (!aHas && bHas) return 1;
+
+    // 2) otherwise: year desc
+    const ay = a.year ?? -Infinity;
+    const by = b.year ?? -Infinity;
+    if (ay !== by) return by - ay;
+
+    // 3) month desc (optional tiebreak)
+    const monthA =
+      typeof a.month === 'string'
+        ? (monthMapping[a.month.toLowerCase()] || Number(a.month) || 1)
+        : (a.month ? Number(a.month) : 1);
+    const monthB =
+      typeof b.month === 'string'
+        ? (monthMapping[b.month.toLowerCase()] || Number(b.month) || 1)
+        : (b.month ? Number(b.month) : 1);
+
+    if (monthA !== monthB) return monthB - monthA;
+
+    // 4) stable-ish tiebreak
+    return a.title.localeCompare(b.title);
   });
 }
 
-function getHighlightNames(locale?: string): string[] {
-  const names = new Set<string>();
-  const baseConfig = getConfig();
-  const runtimeI18n = getRuntimeI18nConfig(baseConfig.i18n);
-
-  const addName = (name?: string) => {
-    const cleaned = cleanBibTeXString(name).trim();
-    if (cleaned) {
-      names.add(cleaned);
-    }
-  };
-
-  addName(baseConfig.author.name);
-
-  if (runtimeI18n.enabled) {
-    runtimeI18n.locales.forEach((localeCode) => {
-      const localizedConfig = getConfig(localeCode);
-      addName(localizedConfig.author.name);
-    });
-  }
-
-  if (locale) {
-    const currentLocaleConfig = getConfig(locale);
-    addName(currentLocaleConfig.author.name);
-  }
-
-  return Array.from(names);
-}
-
-function normalizePersonNameForMatch(name: string): string {
-  return name.toLowerCase().replace(/[\s.,'’`"()\-_/]/g, '');
-}
-
-function buildNameVariants(name: string): Set<string> {
-  const variants = new Set<string>();
-  const cleaned = cleanBibTeXString(name).toLowerCase().trim();
-
-  if (!cleaned) {
-    return variants;
-  }
-
-  variants.add(cleaned);
-
-  const parts = cleaned.split(/\s+/).filter(Boolean);
-  if (parts.length === 2) {
-    variants.add(`${parts[1]} ${parts[0]}`);
-  }
-
-  return variants;
-}
-
-function parseAuthors(authorsStr: string, highlightNames: string[]): Array<{ name: string; isHighlighted?: boolean; isCorresponding?: boolean; isCoAuthor?: boolean }> {
+function parseAuthors(authorsStr: string, highlightName?: string): Array<{ name: string; isHighlighted?: boolean; isCorresponding?: boolean; isCoAuthor?: boolean }> {
   if (!authorsStr) return [];
-
-  const highlightTextCandidates = new Set<string>();
-  const highlightNormalizedCandidates = new Set<string>();
-
-  highlightNames.forEach((name) => {
-    const variants = buildNameVariants(name);
-    variants.forEach((variant) => {
-      highlightTextCandidates.add(variant);
-      highlightNormalizedCandidates.add(normalizePersonNameForMatch(variant));
-    });
-  });
-
-  const highlightTextList = Array.from(highlightTextCandidates);
-  const highlightNormalizedList = Array.from(highlightNormalizedCandidates);
 
   // Split by "and" and clean up
   return authorsStr
@@ -208,17 +169,26 @@ function parseAuthors(authorsStr: string, highlightNames: string[]): Array<{ nam
         name = `${parts[1]} ${parts[0]}`;
       }
 
-      name = cleanBibTeXString(name);
-
       // Check if this is the site owner (to highlight)
-      const lowerName = name.toLowerCase();
-      const normalizedName = normalizePersonNameForMatch(lowerName);
-      const isHighlighted =
-        highlightTextList.some((candidate) => lowerName.includes(candidate)) ||
-        highlightNormalizedList.some((candidate) => normalizedName.includes(candidate));
+      let isHighlighted = false;
+      if (highlightName) {
+        const lowerName = name.toLowerCase();
+        const lowerHighlight = highlightName.toLowerCase();
+        isHighlighted = lowerName.includes(lowerHighlight);
+
+        // Also check for reversed order (Last First) if not found
+        if (!isHighlighted && lowerHighlight.includes(' ')) {
+          const parts = lowerHighlight.split(' ');
+          // Handle simple First Last case
+          if (parts.length === 2) {
+            const reversed = `${parts[1]} ${parts[0]}`;
+            isHighlighted = lowerName.includes(reversed);
+          }
+        }
+      }
 
       return {
-        name,
+        name: cleanBibTeXString(name),
         isHighlighted,
         isCorresponding,
         isCoAuthor,
