@@ -22,6 +22,12 @@ filter = "selected"
 limit = 10
 
 [[sections]]
+id = "awards"
+type = "markdown"
+title = "Awards and Honors"
+source = "awards.md"
+
+[[sections]]
 id = "services"
 type = "markdown"
 title = "Services"
