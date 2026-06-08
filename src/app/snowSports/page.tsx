@@ -25,7 +25,8 @@ export default function SnowSportsPage() {
           A small gallery of my skiing and snowboarding moments.
         </p>
         <p>
-          If you are interested, please check back for my new advantures in the next winter.
+          Thanks for wandering into this corner.
+          If you are interested, please check back for my new adventures next winter.
         </p>
       </div>
 

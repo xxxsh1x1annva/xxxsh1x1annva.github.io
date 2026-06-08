@@ -1,10 +1,12 @@
+- 🏆 I’m honored to have been awarded the **Doctoral Excellent Academic Fund** from Beihang University, in support of my PhD dissertation research.
+- **May 2025** — Outstanding Graduate Student, Beihang University.
 - 🏆 I’m honored to have been selected for the **CAST Young Talent Development Program** (PhD Track)
 - **Sep 2025** — Merit Student, Beihang University.
 - **Apr 2024** — Outstanding Graduate Student, Beihang University.
 - **Nov 2023** — Hisense Scholarship
 - **Sep 2023** — **China National Scholarship**
 - **Sep 2023** — First-Class Graduate Academic Scholarship, ranked 1st
-- **Sep 2023** — Merit Studen, Beihang University.
+- **Sep 2023** — Merit Student, Beihang University.
 - **Sep 2022** — First-Class Graduate Academic Scholarship.
 - **Sep 2022** — Graduate Freshman Scholarship, ranked 1st
 - **Jul 1, 2022** — **Outstanding Graduate of Beijing**
