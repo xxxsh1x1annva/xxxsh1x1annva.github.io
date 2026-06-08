@@ -26,6 +26,8 @@ export default function SnowSportsPage() {
         </p>
         <p>
           Thanks for wandering into this corner.
+        </p>
+        <p>
           If you are interested, please check back for my new adventures next winter.
         </p>
       </div>
