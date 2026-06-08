@@ -1,2 +1,2 @@
 - Program Committee Members: WWW 2026, ICDLT 2025
-- External Reviewers: ICML 2026
+- Reviewers: ICML 2026, TIFS

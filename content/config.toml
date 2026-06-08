@@ -51,6 +51,6 @@ href = "/publications"
 
 [[navigation]]
 title = "⛷️🏂"
-type = "page"
+type = "link"
 target = "snowSports"
 href = "/snowSports"
